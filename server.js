@@ -85,4 +85,45 @@ app.post('/jobs/:jobId/bids', async (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const helmet = require("helmet");
+const morgan = require("morgan");
+
+const app = express();
+
+// Middleware
+app.use(express.json());
+app.use(cors());
+app.use(helmet());
+app.use(morgan("dev"));
+
+// Test Route
+app.get("/", (req, res) => {
+    res.send("Dagger Backend is running! 🚀");
+});
+
+// Database Connection
+const connectDB = async () => {
+    try {
+        await mongoose.connect(process.env.DATABASE_URL, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        console.log("✅ MongoDB Connected...");
+    } catch (error) {
+        console.error("❌ Database Connection Error:", error);
+        process.exit(1);
+    }
+};
+
+connectDB();
+
+// Start Server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+});
 
